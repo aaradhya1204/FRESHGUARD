@@ -1,18 +1,61 @@
-import { sql } from "drizzle-orm";
-import { pgTable, text, varchar } from "drizzle-orm/pg-core";
+
+import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// === TABLE DEFINITIONS ===
+
 export const users = pgTable("users", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
+  role: text("role").notNull().default("user"), // 'admin' or 'user'
+  customId: text("custom_id"), // For the "Aadhaar-like" numeric ID
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+export const products = pgTable("products", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  price: integer("price").notNull(), // In cents or smallest currency unit
+  manufacturingDate: timestamp("manufacturing_date").notNull(),
+  expiryDate: timestamp("expiry_date").notNull(),
+  nutritionalInfo: text("nutritional_info").notNull(), // Simple text or JSON string
+  ingredients: text("ingredients").array(), // Array of strings
+  qrCodeId: text("qr_code_id").notNull().unique(), // The ID encoded in the QR
 });
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
+export const purchases = pgTable("purchases", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(), // References users.id
+  productId: integer("product_id").notNull(), // References products.id
+  purchasedAt: timestamp("purchased_at").defaultNow(),
+});
+
+// === SCHEMAS ===
+
+export const insertUserSchema = createInsertSchema(users).omit({ id: true });
+export const insertProductSchema = createInsertSchema(products).omit({ id: true });
+export const insertPurchaseSchema = createInsertSchema(purchases).omit({ id: true, purchasedAt: true });
+
+// === EXPLICIT TYPES ===
+
 export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
+
+export type Product = typeof products.$inferSelect;
+export type InsertProduct = z.infer<typeof insertProductSchema>;
+
+export type Purchase = typeof purchases.$inferSelect;
+export type InsertPurchase = z.infer<typeof insertPurchaseSchema>;
+
+// API Request/Response Types
+export type LoginRequest = {
+  username?: string; // For admin
+  customId?: string; // For user
+  password?: string; // For admin
+};
+
+export type ProductResponse = Product & {
+  isExpired: boolean;
+  expiresInDays: number;
+};
