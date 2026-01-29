@@ -9,7 +9,7 @@ export function usePurchases() {
   const list = useQuery({
     queryKey: [api.purchases.list.path],
     queryFn: async () => {
-      const res = await fetch(api.purchases.list.path);
+      const res = await fetch(api.purchases.list.path, { credentials: 'include' });
       if (!res.ok) throw new Error("Failed to fetch purchases");
       return api.purchases.list.responses[200].parse(await res.json());
     },
@@ -21,6 +21,7 @@ export function usePurchases() {
         method: api.purchases.create.method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productIds }),
+        credentials: 'include',
       });
       if (!res.ok) throw new Error("Failed to complete purchase");
       return api.purchases.create.responses[201].parse(await res.json());

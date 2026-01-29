@@ -2,6 +2,10 @@
 import { z } from 'zod';
 import { insertUserSchema, insertProductSchema, insertPurchaseSchema, products, purchases, users } from './schema';
 
+// Re-export for frontend usage
+export { insertProductSchema, insertUserSchema, insertPurchaseSchema };
+export type { InsertProduct, InsertUser, InsertPurchase, Product, User, Purchase, LoginRequest } from './schema';
+
 export const errorSchemas = {
   validation: z.object({
     message: z.string(),

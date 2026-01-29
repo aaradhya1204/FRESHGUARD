@@ -9,7 +9,7 @@ export function useProducts() {
   const list = useQuery({
     queryKey: [api.products.list.path],
     queryFn: async () => {
-      const res = await fetch(api.products.list.path);
+      const res = await fetch(api.products.list.path, { credentials: 'include' });
       if (!res.ok) throw new Error("Failed to fetch products");
       return api.products.list.responses[200].parse(await res.json());
     },
@@ -21,6 +21,7 @@ export function useProducts() {
         method: api.products.create.method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: 'include',
       });
       if (!res.ok) throw new Error("Failed to create product");
       return api.products.create.responses[201].parse(await res.json());
@@ -37,7 +38,7 @@ export function useProducts() {
   const remove = useMutation({
     mutationFn: async (id: number) => {
       const url = buildUrl(api.products.delete.path, { id });
-      const res = await fetch(url, { method: api.products.delete.method });
+      const res = await fetch(url, { method: api.products.delete.method, credentials: 'include' });
       if (!res.ok) throw new Error("Failed to delete product");
     },
     onSuccess: () => {
@@ -55,7 +56,7 @@ export function useProductByQr(qrCodeId?: string) {
     queryFn: async () => {
       if (!qrCodeId) return null;
       const url = buildUrl(api.products.getByQr.path, { qrCodeId });
-      const res = await fetch(url);
+      const res = await fetch(url, { credentials: 'include' });
       if (res.status === 404) return null;
       if (!res.ok) throw new Error("Failed to fetch product");
       return api.products.getByQr.responses[200].parse(await res.json());
