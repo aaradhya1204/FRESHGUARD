@@ -10,8 +10,8 @@ export default function UserDashboard() {
   const { purchases, isLoading } = usePurchases();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredPurchases = purchases?.filter(item => 
-    item.product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPurchases = purchases?.filter((item) =>
+    item?.product?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -42,14 +42,21 @@ export default function UserDashboard() {
           </div>
         ) : filteredPurchases && filteredPurchases.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredPurchases.map((item, index) => (
-              <div key={index} className="relative group">
-                <div className="absolute top-2 left-2 z-10 bg-black/70 text-white text-xs px-2 py-1 rounded backdrop-blur-sm">
-                  Purchased {format(new Date(item.purchase.purchasedAt!), 'MMM d')}
+            {filteredPurchases.map((item, index) => {
+              // Defensive: older server responses returned a flattened purchase shape.
+              const purchasedAt = (item as any)?.purchase?.purchasedAt ?? (item as any)?.purchasedAt;
+
+              return (
+                <div key={index} className="relative group">
+                  {purchasedAt ? (
+                    <div className="absolute top-2 left-2 z-10 bg-black/70 text-white text-xs px-2 py-1 rounded backdrop-blur-sm">
+                      Purchased {format(new Date(purchasedAt), "MMM d")}
+                    </div>
+                  ) : null}
+                  <ProductCard product={(item as any).product} />
                 </div>
-                <ProductCard product={item.product} />
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-dashed border-gray-200">

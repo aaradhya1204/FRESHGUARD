@@ -1,7 +1,7 @@
 import { type Product } from "@shared/schema";
 import { Card } from "@/components/ui/card";
 import { ExpiryAlert } from "./ExpiryAlert";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 
 interface ProductCardProps {
   product: Product;
@@ -27,11 +27,17 @@ export function ProductCard({ product, showQr = false }: ProductCardProps) {
         <div className="space-y-2 text-sm text-muted-foreground mb-4">
           <div className="flex justify-between">
             <span>Mfg Date:</span>
-            <span className="font-medium text-foreground">{format(new Date(product.manufacturingDate), 'PP')}</span>
+            <span className="font-medium text-foreground">{(() => {
+              const d = new Date(product.manufacturingDate as any);
+              return isValid(d) ? format(d, 'PP') : "N/A";
+            })()}</span>
           </div>
           <div className="flex justify-between">
             <span>Expiry Date:</span>
-            <span className="font-medium text-foreground">{format(new Date(product.expiryDate), 'PP')}</span>
+            <span className="font-medium text-foreground">{(() => {
+              const d = new Date(product.expiryDate as any);
+              return isValid(d) ? format(d, 'PP') : "N/A";
+            })()}</span>
           </div>
         </div>
 

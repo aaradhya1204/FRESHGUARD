@@ -4,7 +4,13 @@ import { insertUserSchema, insertProductSchema, insertPurchaseSchema, products, 
 
 // Re-export for frontend usage
 export { insertProductSchema, insertUserSchema, insertPurchaseSchema };
-export type { InsertProduct, InsertUser, InsertPurchase, Product, User, Purchase, LoginRequest } from './schema';
+export type { InsertUser, InsertPurchase, Product, User, Purchase, LoginRequest } from './schema';
+
+// Create a writable version of InsertProduct for the client (dates as strings)
+export type InsertProduct = Omit<z.infer<typeof insertProductSchema>, 'manufacturingDate' | 'expiryDate'> & {
+  manufacturingDate: string;
+  expiryDate: string;
+};
 
 export const errorSchemas = {
   validation: z.object({

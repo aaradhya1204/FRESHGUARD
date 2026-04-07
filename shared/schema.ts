@@ -17,9 +17,9 @@ export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   price: integer("price").notNull(), // In cents or smallest currency unit
-  manufacturingDate: timestamp("manufacturing_date").notNull(),
-  expiryDate: timestamp("expiry_date").notNull(),
-  nutritionalInfo: text("nutritional_info").notNull(), // Simple text or JSON string
+  manufacturingDate: timestamp("manufacturing_date", { mode: "string" }).notNull(),
+  expiryDate: timestamp("expiry_date", { mode: "string" }).notNull(),
+  nutritionalInfo: jsonb("nutritional_info").notNull(),
   ingredients: text("ingredients").array(), // Array of strings
   qrCodeId: text("qr_code_id").notNull().unique(), // The ID encoded in the QR
 });
@@ -28,13 +28,21 @@ export const purchases = pgTable("purchases", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(), // References users.id
   productId: integer("product_id").notNull(), // References products.id
-  purchasedAt: timestamp("purchased_at").defaultNow(),
+  purchasedAt: timestamp("purchased_at", { mode: "string" }).defaultNow(),
 });
 
 // === SCHEMAS ===
 
 export const insertUserSchema = createInsertSchema(users).omit({ id: true });
-export const insertProductSchema = createInsertSchema(products).omit({ id: true });
+
+// Drizzle-Zod uses `z.date()` for timestamps, but over the wire we often receive ISO strings.
+// Coerce to Date so server-side parsing works with JSON payloads.
+const baseInsertProductSchema = createInsertSchema(products).omit({ id: true });
+export const insertProductSchema = baseInsertProductSchema.extend({
+  manufacturingDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid manufacturingDate"),
+  expiryDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid expiryDate"),
+});
+
 export const insertPurchaseSchema = createInsertSchema(purchases).omit({ id: true, purchasedAt: true });
 
 // === EXPLICIT TYPES ===

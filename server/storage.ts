@@ -24,7 +24,7 @@ export interface IStorage {
   deleteProduct(id: number): Promise<void>;
 
   // Purchase
-  getPurchases(userId: number): Promise<(Purchase & { product: Product })[]>;
+  getPurchases(userId: number): Promise<{ purchase: Purchase; product: Product }[]>;
   createPurchase(purchase: InsertPurchase): Promise<Purchase>;
 }
 
@@ -84,7 +84,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Purchase Operations
-  async getPurchases(userId: number): Promise<(Purchase & { product: Product })[]> {
+  async getPurchases(userId: number): Promise<{ purchase: Purchase; product: Product }[]> {
     const results = await db
       .select({
         purchase: purchases,
@@ -94,10 +94,11 @@ export class DatabaseStorage implements IStorage {
       .innerJoin(products, eq(purchases.productId, products.id))
       .where(eq(purchases.userId, userId))
       .orderBy(desc(purchases.purchasedAt));
-    
-    return results.map(r => ({
-      ...r.purchase,
-      product: r.product
+
+    // IMPORTANT: Keep this shape aligned with `shared/routes.ts`.
+    return results.map((r) => ({
+      purchase: r.purchase,
+      product: r.product,
     }));
   }
 

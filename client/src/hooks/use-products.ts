@@ -23,7 +23,19 @@ export function useProducts() {
         body: JSON.stringify(data),
         credentials: 'include',
       });
-      if (!res.ok) throw new Error("Failed to create product");
+
+      if (!res.ok) {
+        const contentType = res.headers.get("content-type") || "";
+        let message = `Failed to create product (${res.status})`;
+
+        if (contentType.includes("application/json")) {
+          const body = await res.json().catch(() => null);
+          if (body?.message) message = body.message;
+        }
+
+        throw new Error(message);
+      }
+
       return api.products.create.responses[201].parse(await res.json());
     },
     onSuccess: () => {
@@ -39,7 +51,18 @@ export function useProducts() {
     mutationFn: async (id: number) => {
       const url = buildUrl(api.products.delete.path, { id });
       const res = await fetch(url, { method: api.products.delete.method, credentials: 'include' });
-      if (!res.ok) throw new Error("Failed to delete product");
+
+      if (!res.ok) {
+        const contentType = res.headers.get("content-type") || "";
+        let message = `Failed to delete product (${res.status})`;
+
+        if (contentType.includes("application/json")) {
+          const body = await res.json().catch(() => null);
+          if (body?.message) message = body.message;
+        }
+
+        throw new Error(message);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.products.list.path] });

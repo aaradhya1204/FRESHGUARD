@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ExpiryAlert } from "@/components/ExpiryAlert";
 import { Loader2, ShoppingCart, Trash, Check } from "lucide-react";
 import { type Product } from "@shared/schema";
-import { format } from "date-fns";
+import { differenceInDays, format, isPast, isValid } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 
 export default function TrolleyPage() {
@@ -15,8 +15,10 @@ export default function TrolleyPage() {
   const [manualQrInput, setManualQrInput] = useState("");
   const [cart, setCart] = useState<Product[]>([]);
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const lastWarnedProductIdRef = useRef<number | null>(null);
   const { data: scannedProduct, isLoading: isLoadingProduct } = useProductByQr(scannedId || undefined);
-  const { create: checkout, isPending: isCheckingOut } = usePurchases();
+  const { create: checkout } = usePurchases();
+  const isCheckingOut = checkout.isPending;
   const { toast } = useToast();
 
   const handleManualQrSubmit = () => {
@@ -69,6 +71,35 @@ export default function TrolleyPage() {
 
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
+  useEffect(() => {
+    if (!scannedProduct) return;
+    if (lastWarnedProductIdRef.current === scannedProduct.id) return;
+
+    const expiry = new Date(scannedProduct.expiryDate as any);
+    if (!isValid(expiry)) return;
+
+    const daysLeft = differenceInDays(expiry, new Date());
+    const expired = isPast(expiry) && daysLeft < 0;
+
+    if (expired) {
+      toast({
+        variant: "destructive",
+        title: "Expired product",
+        description: `${scannedProduct.name} is expired.`,
+      });
+      lastWarnedProductIdRef.current = scannedProduct.id;
+      return;
+    }
+
+    if (daysLeft <= 1) {
+      toast({
+        title: "Expiring soon",
+        description: `${scannedProduct.name} expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`,
+      });
+      lastWarnedProductIdRef.current = scannedProduct.id;
+    }
+  }, [scannedProduct, toast]);
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -120,11 +151,17 @@ export default function TrolleyPage() {
                   <div className="grid grid-cols-2 gap-4 text-sm bg-gray-50 p-4 rounded-lg">
                     <div>
                       <span className="text-gray-500 block">Manufactured</span>
-                      <span className="font-medium">{format(new Date(scannedProduct.manufacturingDate), 'PP')}</span>
+                      <span className="font-medium">{(() => {
+                        const d = new Date(scannedProduct.manufacturingDate as any);
+                        return isValid(d) ? format(d, 'PP') : "N/A";
+                      })()}</span>
                     </div>
                     <div>
                       <span className="text-gray-500 block">Expires</span>
-                      <span className="font-medium">{format(new Date(scannedProduct.expiryDate), 'PP')}</span>
+                      <span className="font-medium">{(() => {
+                        const d = new Date(scannedProduct.expiryDate as any);
+                        return isValid(d) ? format(d, 'PP') : "N/A";
+                      })()}</span>
                     </div>
                   </div>
 

@@ -1,4 +1,5 @@
 import { Switch, Route, useLocation } from "wouter";
+import { useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -28,15 +29,19 @@ function ProtectedRoute({
     return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
 
-  if (!user) {
-    setLocation("/");
-    return null;
-  }
+  useEffect(() => {
+    if (!user) {
+      setLocation("/");
+      return;
+    }
 
-  if (requiredRole && user.role !== requiredRole) {
-    setLocation("/"); // Or unauthorized page
-    return null;
-  }
+    if (requiredRole && user.role !== requiredRole) {
+      setLocation("/");
+    }
+  }, [user, requiredRole, setLocation]);
+
+  if (!user) return null;
+  if (requiredRole && user.role !== requiredRole) return null;
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { differenceInDays, isPast } from "date-fns";
+import { differenceInDays, isPast, isValid } from "date-fns";
 import { AlertTriangle, AlertOctagon, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -10,9 +10,10 @@ interface ExpiryAlertProps {
 
 export function ExpiryAlert({ expiryDate, size = 'sm', className }: ExpiryAlertProps) {
   const date = new Date(expiryDate);
+  if (!isValid(date)) return null;
   const daysLeft = differenceInDays(date, new Date());
   const isExpired = isPast(date) && daysLeft < 0;
-  const isExpiringSoon = daysLeft <= 3 && !isExpired; // 3 days warning
+  const isExpiringSoon = daysLeft <= 1 && !isExpired; // 1-day warning
 
   if (isExpired) {
     return (

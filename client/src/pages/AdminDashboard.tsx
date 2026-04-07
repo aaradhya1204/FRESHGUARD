@@ -6,19 +6,21 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertProductSchema, type InsertProduct } from "@shared/routes";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { QRCodeSVG } from "qrcode.react";
 import { Loader2, Plus, Trash2, Tag, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { z } from "zod";
 
-// Enhance schema for form handling (string to number conversion, etc)
+// Form schema: keep form values aligned with what the inputs actually collect.
+// (Avoid Zod transforms here, since react-hook-form expects input types, not transformed output types.)
 const formSchema = insertProductSchema.extend({
   price: z.coerce.number().min(1, "Price must be positive"),
-  manufacturingDate: z.coerce.date(),
-  expiryDate: z.coerce.date(),
-  ingredients: z.string().transform(str => str.split(',').map(s => s.trim()).filter(Boolean)),
+  manufacturingDate: z.string().min(1, "Manufacturing date is required"),
+  expiryDate: z.string().min(1, "Expiry date is required"),
+  nutritionalInfo: z.string().min(1, "Nutritional info is required"),
+  ingredients: z.string().optional().default(""),
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
@@ -32,6 +34,8 @@ export default function AdminDashboard() {
     defaultValues: {
       name: "",
       price: 0,
+      manufacturingDate: "",
+      expiryDate: "",
       nutritionalInfo: "Cal: 100, Prot: 5g, Carbs: 20g",
       ingredients: "",
       qrCodeId: crypto.randomUUID(), // Auto-generate QR
@@ -39,18 +43,40 @@ export default function AdminDashboard() {
   });
 
   const onSubmit = (data: ProductFormValues) => {
-    // @ts-ignore - zod transform handles string[] for ingredients
-    create.mutate(data, {
+    const ingredients = (data.ingredients || "")
+      .split(",")
+      .map((s: string) => s.trim())
+      .filter(Boolean);
+
+    console.log("Submitting product dates (client):", {
+      manufacturingDate: data.manufacturingDate,
+      expiryDate: data.expiryDate,
+    });
+
+    // Server expects the DB insert shape (ingredients: string[]).
+    const payload: InsertProduct = {
+      name: data.name,
+      price: data.price,
+      nutritionalInfo: data.nutritionalInfo,
+      qrCodeId: data.qrCodeId,
+      ingredients,
+      manufacturingDate: data.manufacturingDate,
+      expiryDate: data.expiryDate,
+    };
+
+    create.mutate(payload, {
       onSuccess: () => {
         setIsOpen(false);
         form.reset({
           name: "",
           price: 0,
+          manufacturingDate: "",
+          expiryDate: "",
           nutritionalInfo: "Cal: 100, Prot: 5g, Carbs: 20g",
           ingredients: "",
           qrCodeId: crypto.randomUUID(),
         });
-      }
+      },
     });
   };
 
@@ -105,7 +131,14 @@ export default function AdminDashboard() {
                     <FormField control={form.control} name="manufacturingDate" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Mfg Date</FormLabel>
-                        <FormControl><Input type="date" {...field} value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''} /></FormControl>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            {...field}
+                            value={field.value || ""}
+                            onChange={(e) => field.onChange(e.target.value)}
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
@@ -113,7 +146,14 @@ export default function AdminDashboard() {
                     <FormField control={form.control} name="expiryDate" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Expiry Date</FormLabel>
-                        <FormControl><Input type="date" {...field} value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''} /></FormControl>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            {...field}
+                            value={field.value || ""}
+                            onChange={(e) => field.onChange(e.target.value)}
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
@@ -169,7 +209,11 @@ export default function AdminDashboard() {
                     </div>
                     <div className="text-sm text-muted-foreground space-y-1">
                       <div className="flex items-center gap-2"><Tag className="w-3 h-3" /> ID: {product.qrCodeId.slice(0, 8)}...</div>
-                      <div className="flex items-center gap-2"><Calendar className="w-3 h-3" /> Exp: {format(new Date(product.expiryDate), 'MMM d, yyyy')}</div>
+                      <div className="flex items-center gap-2"><Calendar className="w-3 h-3" /> Exp: {(() => {
+                        if (!product.expiryDate) return "N/A";
+                        const d = new Date(product.expiryDate as any);
+                        return isValid(d) ? format(d, 'MMM d, yyyy') : "N/A";
+                      })()}</div>
                     </div>
                   </div>
                 </CardContent>
