@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 
 import AuthPage from "@/pages/Auth";
+import LandingPage from "@/pages/LandingPage";
 import UserDashboard from "@/pages/UserDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
 import TrolleyPage from "@/pages/Trolley";
@@ -31,7 +32,7 @@ function ProtectedRoute({
 
   useEffect(() => {
     if (!user) {
-      setLocation("/");
+      setLocation("/auth");
       return;
     }
 
@@ -59,6 +60,22 @@ function Router() {
   return (
     <Switch>
       <Route path="/">
+        {user ? (
+          user.role === 'admin' ? <ProtectedRoute component={AdminDashboard} requiredRole="admin" /> : <ProtectedRoute component={UserDashboard} requiredRole="user" />
+        ) : (
+          <LandingPage />
+        )}
+      </Route>
+      
+      <Route path="/auth">
+        {user ? (
+          user.role === 'admin' ? <ProtectedRoute component={AdminDashboard} requiredRole="admin" /> : <ProtectedRoute component={UserDashboard} requiredRole="user" />
+        ) : (
+          <AuthPage />
+        )}
+      </Route>
+      
+      <Route path="/login">
         {user ? (
           user.role === 'admin' ? <ProtectedRoute component={AdminDashboard} requiredRole="admin" /> : <ProtectedRoute component={UserDashboard} requiredRole="user" />
         ) : (
