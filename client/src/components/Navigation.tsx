@@ -1,4 +1,4 @@
-import { Link, useLocation } from "wouter";
+﻿import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { LogOut, LayoutDashboard, ShoppingCart, Scan } from "lucide-react";
@@ -18,7 +18,7 @@ export function Navigation() {
           <div className="flex">
             <Link href={isAdmin ? "/admin" : "/dashboard"} className="flex-shrink-0 flex items-center cursor-pointer">
               <span className="font-display text-2xl font-bold text-primary tracking-tight">
-                FreshGuard
+                ExpironGuard
               </span>
             </Link>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">

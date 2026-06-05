@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,7 +40,7 @@ export default function AuthPage() {
           <div className="inline-flex items-center justify-center p-3 bg-white rounded-2xl shadow-lg mb-4">
             <Leaf className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="text-4xl font-display font-bold text-foreground mb-2">FreshGuard</h1>
+          <h1 className="text-4xl font-display font-bold text-foreground mb-2">ExpironGuard</h1>
           <p className="text-muted-foreground">Smart grocery safety & management</p>
         </div>
 

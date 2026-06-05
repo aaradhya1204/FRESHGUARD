@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -50,7 +50,7 @@ const Navbar = () => (
             <ShieldCheck className="h-6 w-6 text-white" />
           </div>
           <span className="font-display text-2xl font-bold text-emerald-900 tracking-tight">
-            FreshGuard
+            ExpironGuard
           </span>
         </div>
         <div className="hidden md:flex items-center space-x-8">
@@ -93,7 +93,7 @@ const Hero = () => (
             Smarter expiry tracking for <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">safer products</span>.
           </h1>
           <p className="text-lg lg:text-xl text-slate-600 mb-8 max-w-xl leading-relaxed">
-            FreshGuard gives every product a digital safety profile through QR-based tracking. Instantly check expiry status and help shops manage inventory before products become waste.
+            ExpironGuard gives every product a digital safety profile through QR-based tracking. Instantly check expiry status and help shops manage inventory before products become waste.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link href="/auth">
@@ -196,7 +196,7 @@ const ProblemSolution = () => (
              <div className="bg-emerald-100 w-12 h-12 rounded-xl flex items-center justify-center mb-6">
                <ShieldCheck className="h-6 w-6 text-emerald-600" />
              </div>
-             <h3 className="text-xl font-bold text-emerald-900 mb-3">The FreshGuard Solution</h3>
+             <h3 className="text-xl font-bold text-emerald-900 mb-3">The ExpironGuard Solution</h3>
              <p className="text-emerald-800/80 leading-relaxed">Digital profiles for every item. Scan to instantly know the status. Admins get a bird's-eye view of what needs to be sold first.</p>
            </div>
         </FadeIn>
@@ -210,7 +210,7 @@ const HowItWorks = () => (
      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-50"></div>
      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
-           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">How FreshGuard Works</h2>
+           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">How ExpironGuard Works</h2>
            <p className="text-slate-400 max-w-2xl mx-auto">A seamless workflow from warehouse to shopping trolley.</p>
         </div>
         
@@ -241,7 +241,7 @@ const Snapshots = () => (
   <section id="snapshots" className="py-24 bg-slate-50">
      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-           <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">A complete look inside FreshGuard</h2>
+           <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">A complete look inside ExpironGuard</h2>
            <p className="text-slate-600 max-w-2xl mx-auto text-lg">Clean, responsive, and powerful interfaces built for speed.</p>
         </div>
         
@@ -270,7 +270,7 @@ const Snapshots = () => (
                  <div className="order-1 lg:order-2 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden transform transition-all hover:scale-[1.02]">
                     <div className="bg-slate-900 px-4 py-3 flex items-center gap-2">
                        <div className="flex gap-1.5"><div className="w-3 h-3 rounded-full bg-red-500"></div><div className="w-3 h-3 rounded-full bg-amber-500"></div><div className="w-3 h-3 rounded-full bg-green-500"></div></div>
-                       <div className="mx-auto bg-slate-800 text-slate-400 text-xs px-24 py-1 rounded">freshguard.app/admin</div>
+                       <div className="mx-auto bg-slate-800 text-slate-400 text-xs px-24 py-1 rounded">ExpironGuard.app/admin</div>
                     </div>
                     <div className="p-6 bg-slate-50">
                        <div className="flex justify-between items-center mb-6">
@@ -395,7 +395,7 @@ const Snapshots = () => (
                           <div className="bg-emerald-100 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
                              <ShieldCheck className="h-6 w-6 text-emerald-600" />
                           </div>
-                          <h4 className="font-bold text-xl text-slate-900">Welcome to FreshGuard</h4>
+                          <h4 className="font-bold text-xl text-slate-900">Welcome to ExpironGuard</h4>
                           <p className="text-sm text-slate-500">Enter your credentials to continue</p>
                        </div>
                        <div className="flex bg-slate-100 p-1 rounded-lg mb-6">
@@ -430,7 +430,7 @@ const RaspberryPiIntegration = () => (
            </div>
            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">Smart Trolley & Raspberry Pi</h2>
            <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
-             FreshGuard goes beyond the web. It can be extended into a smart retail trolley where a Raspberry Pi acts as the central brain.
+             ExpironGuard goes beyond the web. It can be extended into a smart retail trolley where a Raspberry Pi acts as the central brain.
            </p>
         </div>
 
@@ -440,7 +440,7 @@ const RaspberryPiIntegration = () => (
               {[
                 { name: "Product QR", icon: <Box className="h-6 w-6 text-slate-400" /> },
                 { name: "Pi Scanner", icon: <ScanLine className="h-6 w-6 text-emerald-400" /> },
-                { name: "FreshGuard API", icon: <Server className="h-6 w-6 text-blue-400" /> },
+                { name: "ExpironGuard API", icon: <Server className="h-6 w-6 text-blue-400" /> },
                 { name: "Expiry Check", icon: <ShieldCheck className="h-6 w-6 text-emerald-500" /> },
                 { name: "Trolley Display", icon: <Monitor className="h-6 w-6 text-purple-400" /> },
                 { name: "Dashboard Sync", icon: <RefreshCw className="h-6 w-6 text-teal-400" /> }
@@ -469,7 +469,7 @@ const RaspberryPiIntegration = () => (
              { title: "QR/Barcode Scanner", desc: "Reads product codes seamlessly using connected camera hardware.", icon: <ScanLine className="h-5 w-5 text-emerald-400" /> },
              { title: "Trolley Display", desc: "Shows product name, price, expiry date, safety status, and total cart value.", icon: <Monitor className="h-5 w-5 text-emerald-400" /> },
              { title: "Expiry Warning System", desc: "Visual alerts: Green (Safe), Amber (Expiring Soon), Red (Expired).", icon: <AlertTriangle className="h-5 w-5 text-emerald-400" /> },
-             { title: "Dashboard Sync", desc: "Automatically updates the FreshGuard web dashboard with trolley items.", icon: <RefreshCw className="h-5 w-5 text-emerald-400" /> },
+             { title: "Dashboard Sync", desc: "Automatically updates the ExpironGuard web dashboard with trolley items.", icon: <RefreshCw className="h-5 w-5 text-emerald-400" /> },
              { title: "Smart Checkout Ready", desc: "Extends the app's existing trolley/cart flow into a physical checkout.", icon: <CreditCard className="h-5 w-5 text-emerald-400" /> }
            ].map((feature, i) => (
              <FadeIn delay={i * 0.1} key={i}>
@@ -542,7 +542,7 @@ const FounderBio = () => (
            </div>
            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">Aaradhya Vanakhade</h2>
            <p className="text-lg text-slate-600 max-w-2xl mx-auto font-medium">
-             Student Innovator, Developer, and Founder of FreshGuard from SGIS.
+             Student Innovator, Developer, and Founder of ExpironGuard from SGIS.
            </p>
         </div>
 
@@ -554,10 +554,10 @@ const FounderBio = () => (
                     I am Aaradhya Vanakhade, a student at SGIS and a young technology creator with a strong interest in artificial intelligence, web development, coding, product design, and innovation. I enjoy building projects that are not just visually attractive, but also useful in the real world.
                  </p>
                  <p className="text-slate-600 leading-relaxed mb-4">
-                    My journey started with experimenting in coding and gradually grew into creating larger projects such as <strong>Bolton Programming Language</strong>, <strong>Spark AI Tools</strong>, <strong>ChitChat App</strong>, and now <strong>FreshGuard</strong>. Each project helped me understand how technology can solve different types of problems, from learning and communication to automation and product safety.
+                    My journey started with experimenting in coding and gradually grew into creating larger projects such as <strong>Bolton Programming Language</strong>, <strong>Spark AI Tools</strong>, <strong>ChitChat App</strong>, and now <strong>ExpironGuard</strong>. Each project helped me understand how technology can solve different types of problems, from learning and communication to automation and product safety.
                  </p>
                  <p className="text-slate-600 leading-relaxed">
-                    FreshGuard is one of my most practical innovations. It is designed to help families, shops, retailers, and supermarkets track product expiry dates using QR-based profiles to prevent expired-product usage and reduce waste.
+                    ExpironGuard is one of my most practical innovations. It is designed to help families, shops, retailers, and supermarkets track product expiry dates using QR-based profiles to prevent expired-product usage and reduce waste.
                  </p>
               </FadeIn>
 
@@ -584,7 +584,7 @@ const FounderBio = () => (
                     <h3 className="text-xl font-bold mb-6 text-emerald-400">Key Projects</h3>
                     <ul className="space-y-6">
                        <li>
-                          <div className="font-bold text-lg">FreshGuard</div>
+                          <div className="font-bold text-lg">ExpironGuard</div>
                           <div className="text-sm text-slate-400 mt-1">Smart expiry and inventory safety system.</div>
                        </li>
                        <li>
@@ -624,12 +624,12 @@ const Footer = () => (
      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-center items-center gap-2 mb-6 opacity-50">
            <ShieldCheck className="h-6 w-6" />
-           <span className="font-display text-xl font-bold tracking-tight text-white">FreshGuard</span>
+           <span className="font-display text-xl font-bold tracking-tight text-white">ExpironGuard</span>
         </div>
         
         <div className="max-w-md mx-auto mb-8 bg-slate-900/50 p-4 rounded-xl border border-slate-800/50">
            <p className="text-xs text-slate-500 leading-relaxed text-left">
-              <strong>Disclaimer:</strong> FreshGuard’s expiry status is based on the product data entered into the system. Users should still follow official physical product labels, storage instructions, and general safety guidelines.
+              <strong>Disclaimer:</strong> ExpironGuard’s expiry status is based on the product data entered into the system. Users should still follow official physical product labels, storage instructions, and general safety guidelines.
            </p>
         </div>
         
