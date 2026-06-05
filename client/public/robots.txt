@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://freshguard-1ks0.onrender.com/sitemap.xml
