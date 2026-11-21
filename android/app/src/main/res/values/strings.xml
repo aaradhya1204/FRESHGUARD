@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ExpironGuard</string>
+    <string name="title_activity_main">ExpironGuard</string>
+    <string name="package_name">com.expironguard.app</string>
+    <string name="custom_url_scheme">com.expironguard.app</string>
+</resources>

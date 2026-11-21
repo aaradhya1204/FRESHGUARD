@@ -24,8 +24,14 @@ import {
   Cpu,
   Monitor,
   RefreshCw,
-  CreditCard
+  CreditCard,
+  Download,
+  FileDown,
+  ExternalLink,
+  Sparkles
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { useToast } from "@/hooks/use-toast";
 
 // --- Custom Components for the Landing Page ---
 
@@ -42,30 +48,43 @@ const FadeIn = ({ children, delay = 0, className = "" }: { children: React.React
 );
 
 const Navbar = () => (
-  <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-emerald-100">
+  <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-emerald-100" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex justify-between items-center h-16">
         <div className="flex items-center gap-2">
-          <div className="bg-emerald-600 p-1.5 rounded-lg">
+          <div className="bg-emerald-600 p-1.5 rounded-lg shadow-sm">
             <ShieldCheck className="h-6 w-6 text-white" />
           </div>
           <span className="font-display text-2xl font-bold text-emerald-900 tracking-tight">
             ExpironGuard
           </span>
         </div>
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden md:flex items-center space-x-6">
           <a href="#how-it-works" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">How It Works</a>
           <a href="#snapshots" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">Snapshots</a>
-          <a href="#roadmap" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">Roadmap</a>
+          <a href="#download" className="text-sm font-semibold text-emerald-700 hover:text-emerald-800 transition-colors flex items-center gap-1.5 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
+            <Download className="h-4 w-4" /> Download APK
+          </a>
+          <a href="#about" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">About</a>
+          <a href="/download/apk" download="ExpironGuard.apk">
+            <Button size="sm" variant="outline" className="border-emerald-600 text-emerald-700 hover:bg-emerald-50 rounded-full px-4 gap-1.5 font-medium shadow-sm">
+              <Download className="h-3.5 w-3.5" /> Get APK
+            </Button>
+          </a>
           <Link href="/auth">
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6 shadow-md hover:shadow-lg transition-all">
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-5 shadow-md hover:shadow-lg transition-all text-sm">
               Try Now
             </Button>
           </Link>
         </div>
-        <div className="md:hidden">
+        <div className="md:hidden flex items-center gap-2">
+          <a href="/download/apk" download="ExpironGuard.apk">
+            <Button size="sm" variant="outline" className="border-emerald-600 text-emerald-700 hover:bg-emerald-50 rounded-full text-xs px-2.5 h-8 gap-1 font-semibold">
+              <Download className="h-3.5 w-3.5" /> APK
+            </Button>
+          </a>
           <Link href="/auth">
-            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full">
+            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full text-xs px-3 h-8">
               Try Now
             </Button>
           </Link>
@@ -96,20 +115,30 @@ const Hero = () => (
             ExpironGuard gives every product a digital safety profile through QR-based tracking. Instantly check expiry status and help shops manage inventory before products become waste.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/auth">
-              <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white h-14 px-8 rounded-full shadow-lg hover:shadow-xl transition-all text-lg w-full sm:w-auto gap-2">
-                Try Now <ArrowRight className="h-5 w-5" />
-              </Button>
-            </Link>
-            <a href="#snapshots" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-slate-200 text-slate-700 hover:bg-slate-50 w-full text-lg shadow-sm">
-                View Snapshots
+            <a href="/download/apk" download="ExpironGuard.apk" className="w-full sm:w-auto">
+              <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white h-14 px-8 rounded-full shadow-lg hover:shadow-emerald-600/30 transition-all text-lg w-full sm:w-auto gap-2.5 font-bold">
+                <Download className="h-5 w-5" /> Download APK
               </Button>
             </a>
+            <Link href="/auth" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-slate-300 text-slate-700 hover:bg-slate-50 w-full sm:w-auto text-lg shadow-sm gap-2">
+                Launch Web App <ArrowRight className="h-5 w-5" />
+              </Button>
+            </Link>
           </div>
           
-          <div className="mt-10 flex items-center gap-6 text-sm text-slate-500 font-medium">
-             <div className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-500"/> Admin Ready</div>
+          <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-slate-500 font-medium">
+            <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-semibold border border-emerald-200">
+              <Smartphone className="h-3.5 w-3.5 text-emerald-700" /> Android 8.0+
+            </span>
+            <span className="hidden sm:inline">•</span>
+            <span>Version 1.0.0 (4.2 MB)</span>
+            <span className="hidden sm:inline">•</span>
+            <span className="text-emerald-700 font-semibold">Direct Download</span>
+          </div>
+
+          <div className="mt-8 flex items-center gap-6 text-sm text-slate-500 font-medium">
+             <div className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-500"/> Direct APK Download</div>
              <div className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-500"/> Instant QR Scan</div>
              <div className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-500"/> Zero Waste</div>
           </div>
@@ -324,13 +353,18 @@ const Snapshots = () => (
                     <p className="text-slate-600 text-lg mb-6 leading-relaxed">
                        Users or shop staff can scan a product and instantly view whether it is safe to consume or needs to be prioritized.
                     </p>
-                    <ul className="space-y-3">
+                    <ul className="space-y-3 mb-6">
                        {["Camera-based scanning", "Instant safety badge", "Detailed nutritional info"].map((f, i) => (
                           <li key={i} className="flex items-center gap-3 text-slate-700 font-medium">
                              <CheckCircle2 className="h-5 w-5 text-emerald-500" /> {f}
                           </li>
                        ))}
                     </ul>
+                    <a href="#download">
+                      <Button size="sm" variant="outline" className="rounded-full border-emerald-500 text-emerald-700 hover:bg-emerald-50 gap-2 font-semibold">
+                        <Download className="h-4 w-4" /> Download Mobile APK
+                      </Button>
+                    </a>
                  </div>
                  
                  {/* Mock UI: Mobile Scan */}
@@ -417,6 +451,187 @@ const Snapshots = () => (
      </div>
   </section>
 );
+
+const DownloadSection = () => {
+  const { toast } = useToast();
+
+  const handleDownload = () => {
+    toast({
+      title: "Download Started! 🚀",
+      description: "ExpironGuard.apk (4.2 MB) is downloading. Tap to open when completed.",
+    });
+  };
+
+  return (
+    <section id="download" className="py-24 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 text-white relative overflow-hidden">
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-sm font-semibold mb-4 border border-emerald-500/20 backdrop-blur-sm">
+            <Smartphone className="h-4 w-4" /> Android Mobile Application
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-6">
+            Download <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">ExpironGuard APK</span>
+          </h2>
+          <p className="text-slate-300 text-lg leading-relaxed">
+            Turn your Android smartphone into a high-precision grocery safety scanner. Instant camera scanning, expiry alerts, and smart trolley tracking on the go.
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-12 gap-8 items-stretch mb-16">
+          {/* Main Download Card */}
+          <div className="lg:col-span-7 bg-slate-800/60 backdrop-blur-xl border border-slate-700/70 rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden flex flex-col justify-between">
+            <div>
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-3 shadow-lg flex items-center justify-center">
+                    <ShieldCheck className="h-10 w-10 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">ExpironGuard Android App</h3>
+                    <p className="text-sm text-slate-400 flex items-center gap-2 mt-0.5">
+                      <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                      Official Release • v1.0.0
+                    </p>
+                  </div>
+                </div>
+
+                <span className="px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full bg-emerald-400/10 text-emerald-300 border border-emerald-400/20">
+                  Ready to Install
+                </span>
+              </div>
+
+              <p className="text-slate-300 text-base leading-relaxed mb-8">
+                Install the official ExpironGuard APK directly onto any Android device. Fast camera scanning, offline-ready UI, and real-time freshness detection for every household and store.
+              </p>
+
+              {/* Download Buttons */}
+              <div className="space-y-4 mb-8">
+                <a
+                  href="/download/apk"
+                  download="ExpironGuard.apk"
+                  onClick={handleDownload}
+                  className="block"
+                >
+                  <Button
+                    size="lg"
+                    className="w-full h-16 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-emerald-500/25 transition-all flex items-center justify-center gap-3 group cursor-pointer"
+                  >
+                    <Download className="h-6 w-6 group-hover:translate-y-0.5 transition-transform" />
+                    <span>Download APK (4.2 MB)</span>
+                  </Button>
+                </a>
+
+                <div className="flex flex-wrap items-center justify-between text-xs text-slate-400 px-1 gap-2">
+                  <span className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                    Clean APK, verified build
+                  </span>
+                  <a
+                    href="/ExpironGuard.apk"
+                    download="ExpironGuard.apk"
+                    className="text-emerald-400 hover:underline flex items-center gap-1"
+                  >
+                    Direct file mirror <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick specs grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-slate-700/60 text-center">
+              <div className="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                <span className="text-xs text-slate-400 block mb-1">File Name</span>
+                <span className="text-sm font-semibold text-slate-200">ExpironGuard.apk</span>
+              </div>
+              <div className="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                <span className="text-xs text-slate-400 block mb-1">File Size</span>
+                <span className="text-sm font-semibold text-emerald-400">4.2 MB</span>
+              </div>
+              <div className="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                <span className="text-xs text-slate-400 block mb-1">Target OS</span>
+                <span className="text-sm font-semibold text-slate-200">Android 8.0+</span>
+              </div>
+              <div className="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                <span className="text-xs text-slate-400 block mb-1">Price</span>
+                <span className="text-sm font-semibold text-teal-400">100% Free</span>
+              </div>
+            </div>
+          </div>
+
+          {/* QR Code Card for Desktop Viewers */}
+          <div className="lg:col-span-5 bg-slate-800/40 backdrop-blur-xl border border-slate-700/60 rounded-3xl p-8 shadow-xl flex flex-col items-center justify-center text-center">
+            <div className="bg-white p-4 rounded-2xl shadow-2xl mb-6">
+              <QRCodeSVG
+                value="https://expironguard.onrender.com/download/apk"
+                size={180}
+                level="M"
+                includeMargin={false}
+              />
+            </div>
+
+            <h4 className="text-xl font-bold text-white mb-2">Scan with Phone</h4>
+            <p className="text-slate-400 text-sm max-w-xs mb-6">
+              Point your Android camera at this QR code to download the APK directly onto your phone.
+            </p>
+
+            <a
+              href="/download/apk"
+              download="ExpironGuard.apk"
+              onClick={handleDownload}
+            >
+              <Button variant="outline" size="sm" className="border-slate-600 text-slate-200 hover:bg-slate-800 rounded-full text-xs gap-1.5">
+                <Download className="h-3.5 w-3.5 text-emerald-400" /> Direct APK Link
+              </Button>
+            </a>
+          </div>
+        </div>
+
+        {/* 4-Step Installation Guide */}
+        <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 lg:p-10">
+          <h3 className="text-xl font-bold text-white mb-6 text-center sm:text-left flex items-center justify-center sm:justify-start gap-2">
+            <CheckCircle2 className="h-5 w-5 text-emerald-400" /> Easy 4-Step Installation on Android
+          </h3>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                step: "1",
+                title: "Download APK",
+                desc: "Click 'Download APK' above to start downloading ExpironGuard.apk to your phone.",
+              },
+              {
+                step: "2",
+                title: "Open Download",
+                desc: "Once downloaded, tap the file in your notification bar or find it inside your Downloads folder.",
+              },
+              {
+                step: "3",
+                title: "Allow Unknown Apps",
+                desc: "If Android asks to allow unknown apps from Chrome or your browser, tap Settings and turn on 'Allow from this source'.",
+              },
+              {
+                step: "4",
+                title: "Install & Scan",
+                desc: "Tap 'Install'. Within seconds, ExpironGuard is ready to launch and scan grocery product QR codes!",
+              },
+            ].map((item, idx) => (
+              <div key={idx} className="bg-slate-800/40 border border-slate-700/50 rounded-2xl p-5 relative">
+                <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-sm mb-3 border border-emerald-500/30">
+                  {item.step}
+                </div>
+                <h4 className="font-semibold text-white text-base mb-1.5">{item.title}</h4>
+                <p className="text-slate-400 text-xs leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const RaspberryPiIntegration = () => (
   <section className="py-24 bg-slate-950 text-white relative overflow-hidden">
@@ -641,6 +856,9 @@ const Footer = () => (
         
         <div className="flex justify-center gap-6 text-sm">
            <a href="#" className="hover:text-white transition">Home</a>
+           <a href="#download" className="hover:text-white transition text-emerald-400 font-semibold flex items-center gap-1">
+             <Download className="h-3.5 w-3.5" /> Download APK
+           </a>
            <Link href="/auth" className="hover:text-emerald-400 transition text-emerald-500 font-medium">Try Now</Link>
         </div>
      </div>
@@ -656,6 +874,7 @@ export default function LandingPage() {
         <ProblemSolution />
         <HowItWorks />
         <Snapshots />
+        <DownloadSection />
         <RaspberryPiIntegration />
         <UseCases />
         <TechStack />
@@ -669,10 +888,15 @@ export default function LandingPage() {
               <p className="text-emerald-100 text-lg mb-10 max-w-2xl mx-auto">
                  Join the movement to reduce avoidable waste and protect consumers with verifiable, scannable data.
               </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
-                 <Link href="/auth">
-                    <Button size="lg" className="bg-white text-emerald-700 hover:bg-slate-50 h-14 px-8 rounded-full shadow-xl text-lg font-bold">
-                       Try Now
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+                 <a href="/download/apk" download="ExpironGuard.apk" className="w-full sm:w-auto">
+                    <Button size="lg" className="bg-slate-900 hover:bg-slate-800 text-white h-14 px-8 rounded-full shadow-xl text-lg font-bold w-full sm:w-auto gap-2.5">
+                       <Download className="h-5 w-5 text-emerald-400" /> Download APK (Android)
+                    </Button>
+                 </a>
+                 <Link href="/auth" className="w-full sm:w-auto">
+                    <Button size="lg" className="bg-white text-emerald-700 hover:bg-slate-50 h-14 px-8 rounded-full shadow-xl text-lg font-bold w-full sm:w-auto">
+                       Launch Web App
                     </Button>
                  </Link>
               </div>

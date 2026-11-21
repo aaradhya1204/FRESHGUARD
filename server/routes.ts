@@ -1,8 +1,10 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import type { Server } from "http";
 import session from "express-session";
 import MemoryStore from "memorystore";
 import { z } from "zod";
+import path from "path";
+import fs from "fs";
 
 import { storage } from "./storage";
 import { api } from "@shared/routes";
@@ -178,6 +180,40 @@ export async function registerRoutes(
 
     res.status(201).json({ message: "Purchases recorded" });
   });
+
+  // =====================
+  // APK DOWNLOAD ROUTES
+  // =====================
+  const handleApkDownload = (_req: Request, res: Response) => {
+    const candidatePaths = [
+      path.resolve(process.cwd(), "client", "public", "ExpironGuard.apk"),
+      path.resolve(process.cwd(), "dist", "public", "ExpironGuard.apk"),
+      path.resolve(process.cwd(), "apps", "android", "ExpironGuard.apk"),
+      path.resolve(process.cwd(), "ExpironGuard.apk"),
+      path.resolve(__dirname, "public", "ExpironGuard.apk"),
+      path.resolve(__dirname, "..", "client", "public", "ExpironGuard.apk"),
+    ];
+
+    for (const filePath of candidatePaths) {
+      if (fs.existsSync(filePath)) {
+        res.setHeader("Content-Type", "application/vnd.android.package-archive");
+        res.setHeader("Content-Disposition", 'attachment; filename="ExpironGuard.apk"');
+        return res.download(filePath, "ExpironGuard.apk", (err) => {
+          if (err && !res.headersSent) {
+            console.error("Error sending APK download:", err);
+            res.status(500).send("Failed to download APK");
+          }
+        });
+      }
+    }
+
+    res.status(404).json({ message: "ExpironGuard APK file not found on server." });
+  };
+
+  app.get("/api/download/apk", handleApkDownload);
+  app.get("/download/apk", handleApkDownload);
+  app.get("/download-apk", handleApkDownload);
+  app.get("/ExpironGuard.apk", handleApkDownload);
 
   // =====================
   // SEED DATABASE

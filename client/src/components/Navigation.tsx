@@ -1,7 +1,7 @@
 ﻿import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { LogOut, LayoutDashboard, ShoppingCart, Scan } from "lucide-react";
+import { LogOut, LayoutDashboard, ShoppingCart, Scan, Download } from "lucide-react";
 
 export function Navigation() {
   const { user, logout } = useAuth();
@@ -12,7 +12,7 @@ export function Navigation() {
   const isAdmin = user.role === 'admin';
 
   return (
-    <nav className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
+    <nav className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
@@ -41,6 +41,12 @@ export function Navigation() {
             <span className="text-sm text-muted-foreground hidden md:inline-block">
               {user.username} ({user.role})
             </span>
+            <a href="/download/apk" download="ExpironGuard.apk" title="Download Android APK">
+              <Button variant="outline" size="sm" className="hidden sm:inline-flex items-center gap-1.5 border-emerald-300 text-emerald-700 hover:bg-emerald-50 rounded-full h-8 px-3 text-xs font-semibold">
+                <Download className="h-3.5 w-3.5" />
+                APK
+              </Button>
+            </a>
             <Button variant="ghost" size="sm" onClick={() => logout()}>
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out

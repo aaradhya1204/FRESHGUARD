@@ -8,11 +8,21 @@
     "build": "tsx script/build.ts",
     "start": "node dist/index.cjs",
     "check": "tsc",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "cap:sync": "cap sync",
+    "cap:open": "cap open android",
+    "build:apk": "vite build && cap sync android && cd android && ./gradlew assembleDebug && cp app/build/outputs/apk/debug/app-debug.apk ../ExpironGuard.apk && mkdir -p ../apps/android && cp ../ExpironGuard.apk ../apps/android/",
+    "build:ipa": "export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer && vite build && cap sync ios && xcodebuild -workspace ios/App/App.xcworkspace -scheme App -configuration Release -destination 'generic/platform=iOS' -derivedDataPath ios/build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' build && rm -rf ios/ipa_temp ExpironGuard.ipa && mkdir -p ios/ipa_temp/Payload && cp -R ios/build/Build/Products/Release-iphoneos/App.app ios/ipa_temp/Payload/ && cd ios/ipa_temp && zip -r -q ../../ExpironGuard.ipa Payload && cd ../.. && rm -rf ios/ipa_temp && mkdir -p apps/ios && cp ExpironGuard.ipa apps/ios/",
+    "cap:open:ios": "DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer cap open ios"
   },
   "dependencies": {
+    "@capacitor/android": "^6.2.3",
+    "@capacitor/cli": "^6.2.3",
+    "@capacitor/core": "^6.2.3",
+    "@capacitor/ios": "^6.2.3",
     "@hookform/resolvers": "^3.10.0",
     "@jridgewell/trace-mapping": "^0.3.25",
+    "@neondatabase/serverless": "^1.1.0",
     "@radix-ui/react-accordion": "^1.2.4",
     "@radix-ui/react-alert-dialog": "^1.1.7",
     "@radix-ui/react-aspect-ratio": "^1.1.3",

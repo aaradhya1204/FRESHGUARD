@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Leaf, ShieldCheck, ShoppingCart } from "lucide-react";
+import { Loader2, Leaf, ShieldCheck, ShoppingCart, Download } from "lucide-react";
 
 export default function AuthPage() {
   const { login, isLoggingIn } = useAuth();
@@ -28,7 +28,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 relative overflow-hidden" style={{ paddingTop: 'max(env(safe-area-inset-top), 1rem)', paddingBottom: 'max(env(safe-area-inset-bottom), 1rem)' }}>
       {/* Abstract Background Shapes */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
         <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-3xl animate-pulse" />
@@ -114,6 +114,18 @@ export default function AuthPage() {
             </p>
           </TabsContent>
         </Tabs>
+
+        <div className="mt-8 text-center bg-white/80 backdrop-blur-sm p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+          <p className="text-sm text-slate-600 mb-2 font-medium">Using an Android device?</p>
+          <a
+            href="/download/apk"
+            download="ExpironGuard.apk"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-4 py-2 rounded-full transition-colors"
+          >
+            <Download className="h-4 w-4 text-emerald-600" />
+            Download Android APK (4.2 MB)
+          </a>
+        </div>
       </div>
     </div>
   );

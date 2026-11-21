@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import { useProductByQr } from "@/hooks/use-products";
+import { useProductByQr, useProducts } from "@/hooks/use-products";
 import { usePurchases } from "@/hooks/use-purchases";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,15 +17,28 @@ export default function TrolleyPage() {
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
   const lastWarnedProductIdRef = useRef<number | null>(null);
   const { data: scannedProduct, isLoading: isLoadingProduct } = useProductByQr(scannedId || undefined);
+  const { products } = useProducts();
   const { create: checkout } = usePurchases();
   const isCheckingOut = checkout.isPending;
   const { toast } = useToast();
 
   const handleManualQrSubmit = () => {
-    if (manualQrInput.trim()) {
-      setScannedId(manualQrInput.trim());
-      setManualQrInput("");
+    const query = manualQrInput.trim();
+    if (!query) return;
+
+    // Search by product name or exact qrCodeId
+    const match = products?.find(
+      (p) =>
+        p.qrCodeId.toLowerCase() === query.toLowerCase() ||
+        p.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    if (match) {
+      setScannedId(match.qrCodeId);
+    } else {
+      setScannedId(query);
     }
+    setManualQrInput("");
   };
 
   useEffect(() => {
@@ -114,13 +127,13 @@ export default function TrolleyPage() {
             <div id="reader" className="rounded-lg overflow-hidden border-2 border-dashed border-gray-300"></div>
             <p className="text-xs text-center text-muted-foreground mt-2">Point camera at a product QR code</p>
             
-            {/* Manual QR Entry for demo/testing */}
+            {/* Manual QR Entry & Quick Select */}
             <div className="mt-4 pt-4 border-t">
-              <p className="text-sm text-muted-foreground mb-2">Or enter QR code ID manually:</p>
+              <p className="text-sm text-muted-foreground mb-2">Or enter product name / QR code manually:</p>
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="e.g. prod_milk_001"
+                  placeholder="e.g. Milk, Chips, Orange..."
                   value={manualQrInput}
                   onChange={(e) => setManualQrInput(e.target.value)}
                   className="flex-1 px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
@@ -129,7 +142,25 @@ export default function TrolleyPage() {
                 />
                 <Button onClick={handleManualQrSubmit} data-testid="button-lookup-qr">Lookup</Button>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">Demo QR IDs: <code className="bg-gray-100 px-1 rounded">prod_milk_001</code>, <code className="bg-gray-100 px-1 rounded">prod_bread_002</code>, <code className="bg-gray-100 px-1 rounded">prod_yogurt_003</code></p>
+
+              {/* Quick Select Buttons */}
+              {products && products.length > 0 && (
+                <div className="mt-3">
+                  <p className="text-xs text-muted-foreground mb-1.5 font-medium">Quick add from store inventory:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {products.map((p) => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => setScannedId(p.qrCodeId)}
+                        className="text-xs bg-slate-100 hover:bg-primary/10 hover:text-primary hover:border-primary/30 border border-slate-200 text-slate-700 px-2.5 py-1 rounded-full transition-all text-left font-medium"
+                      >
+                        + {p.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
 
