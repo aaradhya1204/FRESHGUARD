@@ -1,0 +1,135 @@
+================================================================================
+     EXPIRONGUARD — RASPBERRY PI 4 + WAVESHARE + LOGITECH CAMERA GUIDE
+                     COMPLETE SETUP CHEAT SHEET FOR MONDAY
+================================================================================
+
+HARDWARE INCLUDED:
+1. Raspberry Pi 4 Model B
+2. Waveshare Display (Touchscreen)
+3. Logitech USB Camera
+4. MicroSD Card + SD Card Adapter
+
+--------------------------------------------------------------------------------
+PART 1: FLASHING THE SD CARD (Using School Computer)
+--------------------------------------------------------------------------------
+1. Insert the MicroSD card into the SD Card Adapter, and plug it into a school PC.
+2. Download and open "Raspberry Pi Imager" (from raspberrypi.com/software).
+3. Select:
+   - Device: Raspberry Pi 4
+   - OS: Raspberry Pi OS (64-bit) (Recommended)
+   - Storage: Your SD Card
+4. Click "Next" -> When it asks "Would you like to apply OS customization?", click:
+   [EDIT SETTINGS]
+   - General Tab:
+     * Set hostname: expironguard
+     * Set username: pi  (or your name)
+     * Set password: password123 (or any password you like)
+     * Wireless LAN: Enter your phone hotspot or school Wi-Fi name & password
+   - Services Tab:
+     * Check [x] Enable SSH -> Use password authentication
+5. Click [SAVE] -> [YES] to write and format the SD card. Takes about 3 minutes.
+
+--------------------------------------------------------------------------------
+PART 2: ASSEMBLING HARDWARE ON MONDAY
+--------------------------------------------------------------------------------
+1. Put the flashed MicroSD card into the Raspberry Pi 4.
+2. Connect Waveshare Screen:
+   - Connect HDMI cable between Pi 4 (micro-HDMI) and Waveshare screen.
+   - Connect the screen's USB cable into a USB port on the Pi 4 (this powers the touch!).
+3. Connect Logitech Camera:
+   - Plug the Logitech USB cable into any USB port (blue USB 3.0 port recommended).
+4. Plug in USB-C Power to turn on the Pi 4.
+   - Wait 60 seconds. The Raspberry Pi OS desktop will appear on your Waveshare screen!
+
+--------------------------------------------------------------------------------
+PART 3: VIRTUAL ON-SCREEN TOUCH KEYBOARD (NO PHYSICAL KEYBOARD NEEDED!)
+--------------------------------------------------------------------------------
+To type using only your fingers on the Waveshare touchscreen without needing a physical keyboard:
+
+Open Terminal on the Pi (click the black terminal icon at top left) and run:
+
+COMMAND 1 (Update Package List):
+sudo apt update
+
+COMMAND 2 (Install Onboard & Matchbox Virtual Keyboards):
+sudo apt install -y onboard matchbox-keyboard
+
+COMMAND 3 (Launch Onboard Keyboard):
+onboard &
+
+TIP: How to open Virtual Keyboard anytime from the screen:
+1. Click the Raspberry Menu icon (top left).
+2. Go to "Universal Access" or "Accessories".
+3. Click "Onboard" or "Keyboard".
+4. A floating touch keyboard will appear right on your Waveshare screen!
+
+TIP: Make Keyboard auto-open when you touch text fields:
+In Onboard settings:
+- Open Onboard -> Click the Preferences gear icon.
+- Under "General" -> Check "Auto-show when editing text".
+
+--------------------------------------------------------------------------------
+PART 4: VERIFY LOGITECH CAMERA
+--------------------------------------------------------------------------------
+Test if the Logitech USB Camera is recognized by running:
+
+COMMAND:
+lsusb
+
+(You will see "Logitech, Inc. Webcam" in the list).
+
+--------------------------------------------------------------------------------
+PART 5: INSTALL EXPIRONGUARD SMART TROLLEY CODE
+--------------------------------------------------------------------------------
+Run these exact commands in Terminal:
+
+COMMAND 1 (Clone the project from GitHub):
+git clone https://github.com/aaradhya1204/FRESHGUARD.git
+
+COMMAND 2 (Enter the Raspberry Pi directory):
+cd FRESHGUARD/raspberry_pi
+
+COMMAND 3 (Run the automated 1-click setup script):
+chmod +x setup.sh
+./setup.sh
+
+(This installs OpenCV, Pygame, PyZbar QR reader, and Requests).
+
+--------------------------------------------------------------------------------
+PART 6: LAUNCH EXPIRONGUARD SMART TROLLEY ON WAVESHARE!
+--------------------------------------------------------------------------------
+Run this command:
+
+COMMAND:
+python3 smart_trolley.py
+
+WHAT HAPPENS NEXT:
+1. The 800x480 Smart Trolley dashboard opens fullscreen on your Waveshare screen!
+2. The Logitech camera starts scanning product QR codes in real-time.
+3. Hold any product QR code in front of the Logitech Camera:
+   - Amul Taaza Milk -> BEEP! Red warning: "EXPIRED! Do not purchase."
+   - Diamond Chips   -> BEEP! Green alert: "SAFE & FRESH (18 days left)."
+4. Total cart price updates automatically!
+5. Tap or click "Checkout" to complete purchase.
+
+--------------------------------------------------------------------------------
+PART 7 (OPTIONAL): AUTO-START ON BOOT (FOR THE COMPETITION!)
+--------------------------------------------------------------------------------
+To make the ExpironGuard Smart Trolley launch automatically as soon as the Pi powers on:
+
+1. Open autostart configuration:
+mkdir -p ~/.config/autostart
+nano ~/.config/autostart/trolley.desktop
+
+2. Paste this text:
+[Desktop Entry]
+Type=Application
+Name=ExpironGuard
+Exec=python3 /home/pi/FRESHGUARD/raspberry_pi/smart_trolley.py
+
+3. Press Ctrl + O, then Enter to save. Press Ctrl + X to exit.
+Now, whenever you power on the Pi at the competition, the ExpironGuard Smart Trolley UI opens automatically!
+
+================================================================================
+ALL DONE! You have a fully self-contained Smart Trolley with Touch Keyboard!
+================================================================================
